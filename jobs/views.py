@@ -55,4 +55,20 @@ from .models import Job, Application
 def apply_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
     Application.objects.get_or_create(user=request.user, job=job)
-    return redirect('jobs:job_detail', job_id=job.id)    
+    return redirect('jobs:job_detail', job_id=job.id) 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from .models import Job, Application
+
+@login_required
+def apply_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+    
+    # Already apply chesada check chey
+    application, created = Application.objects.get_or_create(
+        user=request.user, 
+        job=job
+    )
+    
+    # Job detail page ki malli pampu
+    return redirect('jobs:job_detail', job_id=job.id)       

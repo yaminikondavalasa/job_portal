@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Portal</title>
+</head>
+<body style="font-family: Arial; max-width: 1200px; margin: 0 auto; padding: 20px;">
+    
+    <div style="background: #343a40; padding: 15px; margin: -20px -20px 20px -20px; color: white;">
+        <a href="{% url 'job_list' %}" style="color: white; text-decoration: none; font-size: 20px; font-weight: bold;">Job Portal</a>
+        <div style="float: right;">
+            {% if user.is_authenticated %}
+                <span>Hi, {{ user.username }}</span> | 
+                <a href="{% url 'my_applications' %}" style="color: white;">My Applications</a> | 
+                <a href="{% url 'logout' %}" style="color: white;">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" style="color: white;">Login</a> | 
+                <a href="{% url 'signup' %}" style="color: white;">Signup</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <h1 style="text-align: center;">Available Jobs</h1>
+    
+    <form method="GET" style="margin: 20px 0; text-align: center;">
+        <input type="text" name="q" placeholder="Search jobs..." value="{{ request.GET.q }}" style="padding: 10px; width: 400px; border: 1px solid #ccc; border-radius: 5px;">
+        <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+    </form>
+
+    <hr>
+    
+    {% for job in jobs %}
+        <div style="border: 1px solid #ddd; padding: 20px; margin: 15px 0; border-radius: 10px;">
+            <h2><a href="{% url 'job_detail' job.id %}" style="text-decoration: none; color: #007bff;">{{ job.title }}</a></h2>
+            <h3 style="color: #555;">{{ job.company }}</h3>
+            <p><b>Location:</b> {{ job.location }}</p>
+            <p>{{ job.description|truncatewords:30 }}</p>
+            <p style="color: #888;">Posted on: {{ job.posted_date|date:"d M Y" }}</p>
+        </div>
+    {% empty %}
+        <p style="text-align: center; margin-top: 50px;">No jobs found.</p>
+    {% endfor %}
+    
+</body>
+</html>

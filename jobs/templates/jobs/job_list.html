@@ -1,0 +1,55 @@
+{% extends 'jobs/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold text-center mb-4">Available Jobs</h2>
+        
+        <!-- SEARCH BAR -->
+        <form method="GET" action="{% url 'job_list' %}" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control form-control-lg" 
+                       placeholder="Search: Python, Infosys, Hyderabad..." 
+                       value="{{ query|default:'' }}">
+                <button class="btn btn-primary btn-lg" type="submit">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <!-- LOCATION BUTTONS -->
+        <div class="text-center mb-4">
+            <a href="{% url 'job_list' %}" class="btn btn-primary btn-sm me-2">All</a>
+            <a href="{% url 'job_list' %}?location=Hyderabad" class="btn btn-outline-success btn-sm me-2">Hyderabad</a>
+            <a href="{% url 'job_list' %}?location=Bangalore" class="btn btn-outline-success btn-sm me-2">Bangalore</a>
+            <a href="{% url 'job_list' %}?location=Remote" class="btn btn-outline-success btn-sm">Remote</a>
+        </div>
+    </div>
+</div>
+
+<!-- JOBS LIST -->
+<div class="row">
+    {% for job in jobs %}
+    <div class="col-md-12 mb-3">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title text-primary">{{ job.title }}</h4>
+                <h6 class="card-subtitle mb-2 text-muted">{{ job.company }}</h6>
+                <p class="mb-1"><strong>Location:</strong> {{ job.location }}</p>
+                <p class="card-text">{{ job.description|truncatewords:30 }}</p>
+                <p class="text-muted"><small>Posted on: {{ job.posted_date|date:"d M Y" }}</small></p>
+                <a href="{% url 'job_detail' job.id %}" class="btn btn-primary">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col">
+        <div class="alert alert-warning text-center">
+            No jobs found{% if query %} for "{{ query }}"{% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
